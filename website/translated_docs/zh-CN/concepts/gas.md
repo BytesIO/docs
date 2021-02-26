@@ -1,7 +1,7 @@
 ---
 id: gas
-title: Gas
-sidebar_label: Gas
+title: 燃料
+sidebar_label: 燃料
 ---
 
 When you make calls to the NEAR blockchain to update or change data, the people running the infrastructure of the blockchain incur some cost. At the end of the day, some computers somewhere process your request, and the [validators](/docs/validator/staking-overview) running these computers spend significant capital to keep these computers running.
