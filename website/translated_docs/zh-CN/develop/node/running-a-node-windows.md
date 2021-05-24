@@ -4,93 +4,93 @@ title: Running a Node on Windows
 sidebar_label: Running a node (Windows)
 ---
 
-1.  If Windows Subsystem for Linux is not enabled, open PowerShell as administrator and run:
+1.  如果未启用Linux的Windows子系统，请以管理员身份打开PowerShell并运行：
     ```sh
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
     ```
-    Then restart your computer.
-2. Go to your Microsoft Store and look for Ubuntu; this is the Ubuntu Terminal instance. Install and launch it.
-3. Now you might be asked for username and password, do not use admin as username.
-4. Your Ubuntu Instance need initial before next steps
+    然后重新启动计算机。
+2. 转到您的Microsoft商店并查找Ubuntu；这是Ubuntu终端实例。安装并启动它。
+3. 现在可能会要求您输入用户名和密码，不要使用admin作为用户名。
+4. 您的Ubuntu实例需要先进行初始化以进入后续步骤
     ```sh
     sudo apt-get update
     sudo apt-get upgrade
     sudo apt-get install build-essential pkg-config libssl-dev
     ```
-5. You need to install OpenSSL, which you will need to run the node. To download OpenSSL, please run the following commands in the Ubuntu Terminal:
+5. 您需要安装OpenSSL，以用来运行该节点。要下载OpenSSL，请在Ubuntu终端中运行以下命令：
     ```sh
     cd /tmp
     wget https://www.openssl.org/source/openssl-1.1.1.tar.gz
     tar xvf openssl-1.1.1.tar.gz
     ```
-6. After it finished downloading OpenSSL, run the following commands to install:
+6. 完成下载OpenSSL后，运行以下命令进行安装：
     ```sh
     cd openssl-1.1.1
     sudo ./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)'
     sudo make
     sudo make install
     ```
-    The files will be under the following directory: /usr/local/ssl.
-7. Once this is finished, you have to ensure that Ubuntu is going to use the right version of OpenSSL. Now update the path for man pages and binaries. Run the following command:
+    这些文件将位于以下目录中：/usr/local/ssl。
+7. 完成此操作后，您必须确保Ubuntu将使用正确版本的OpenSSL。现在，更新手册页和二进制文件的路径。运行以下命令：
     ```sh
     cd ../..
     sudo nano /etc/manpath.config
     ```
-8. A text file will open, add the following line:
+8. 将打开一个文本文件，添加以下行：
     ```sh
     MANPATH_MAP     /usr/local/ssl/bin      /usr/local/ssl/man
     ```
-    Once this is done press ctrl + o . It will ask you to save the file, just press enter. Now press ctrl + x to exit.
-9. To make sure that OpenSSL is installed run:
+    完成此操作后，按ctrl + o。它将要求您保存文件，只需按Enter。现在按ctrl + x退出。
+9. 要确保已安装OpenSSL，请运行：
     ```sh
     openssl version -v
     ```
-    This should show you the installed version. More info on this can be found here. (https://manpages.ubuntu.com/manpages/bionic/man1/version.1ssl.html)
-10. Now you have to run the following commands to install all nessesary software and dependencies:
+    这应该显示您已安装的版本。有关更多信息，请参见此处。（https://manpages.ubuntu.com/manpages/bionic/man1/version.1ssl.html）
+10. 现在，您必须运行以下命令来安装所有必要的软件和依赖项：
     ```sh
     sudo apt-get update
     sudo apt-get upgrade
     sudo apt-get install -y git jq binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev cmake gcc g++ protobuf-compiler python3 python3-pip llvm clang
     ```
-    Install Rustup
+    安装Rustup
     ```sh
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     source $HOME/.cargo/env
     rustup default nightly
     ```
-    Great! All set to get the node up and running!
-11. Clone the github nearcore
+    很好! 所有可以使节点启动并运行的准备已经完成！
+11. 克隆nearcore的github代码仓库
     
-    First we need to check a version which is currently working in testnet:
+    首先，我们需要检查当前在testnet中工作的版本：
     ```sh
     curl -s https://rpc.testnet.near.org/status | jq .version
     ```
-    You’ll get something like this: "1.13.0-rc.2". "1.13.0" is a branch which we need to clone to build our node for testnet.
+    您将获得类似以下内容的代码："1.13.0-rc.2"。"1.13.0"是一个分支，我们需要对其进行克隆以构建用于testnet的节点。
 
     ```sh
     git clone --branch 1.13.0 https://github.com/near/nearcore.git
     ```
-12. This created a nearcore directory, change into that one and build a noce:
+12. 这创建了一个Nearcore目录，切换到该目录并建立一个Noce：
     ```sh
     cd nearcore
     make release
     ```
-13. Install nearup
+13. 安装nearup
     ```sh
     pip3 install --user nearup
     export PATH="$HOME/.local/bin:$PATH"
     ```
-14. Final: And now run the testnet:
+14. 最后: 现在运行testnet:
     ```sh
     nearup run testnet --binary-path ~/nearcore/target/release/
     ```
-    To be sure node is ruuning you can check logs 
+    您可以通过检查日志来确保节点稳定运行:
     ```sh
     nearup logs --follow
     ```
 
-You might be asked for a validator ID; if you do not want to validate, simply press enter. For validation, please refer to the [validation section](validator/staking.md).
+可能会要求您提供验证者ID；如果您不想验证，只需按Enter。有关验证，请参阅[验证部分](validator/staking.md).。
 
->Got a question?
+>有任何疑问?
 <a href="https://stackoverflow.com/questions/tagged/nearprotocol">
-  <h8>Ask it on StackOverflow!</h8></a>
+  <h8>在StackOverflow上提问!</h8></a>
