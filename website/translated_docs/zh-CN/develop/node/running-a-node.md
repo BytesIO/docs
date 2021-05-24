@@ -4,70 +4,57 @@ title: Running a node
 sidebar_label: Running a node
 ---
 
-## Why?
+## 为什么需要节点?
+NEAR协议在一组公共维护的计算机（或“节点”）上运行。
+您可能出于以下几个原因决定运行自己的节点：
 
-NEAR Protocol runs on a collection of publicly maintained computers (or "nodes").
+- 为了开发和部署合约到已经连接到MainNet，TestNet或BetaNet的节点（†）
+- 在本地（独立和隔离）节点（有时称为“ LocalNet”）上开发和部署合约。（††）
+- 以运行“验证者节点”的验证者身份加入网络（请参见[staking](/docs/validator/staking)）
 
-You may decide to run a node of your own for a few reasons:
+_( † ) `TestNet`旨在在每周`BetaNet`释放周期之后尽可能稳定地（类似）和`MainNet`运行一致。_
 
-- To develop and deploy contracts on a node connected to `MainNet`, `TestNet` or `BetaNet` (†)
-- To develop and deploy contracts on a local (independent and isolated) node (sometimes called "LocalNet"). (††)
-- To join a network as a validator running a "validator node" (see [staking](/docs/validator/staking))
+_( †† )如果您希望避免在开发过程中泄漏有关您的工作的信息，`LocalNet`会是一个对的选择。因为`TestNet`和`BetaNet`是公共网络。`LocalNet`还可以让您完全控制帐户，经济性和其他因素，以使用更高级的用例（例如，对进行更改`nearcore`）。_
 
-_( † ) `TestNet` is intended to operate as closely (similarly) to `MainNet`  as possible with only stable releases while `BetaNet` follows a weekly release cycle._
+## `nearup` 安装
+您可以按照以下Github指令安装`nearup`
+https://github.com/near/nearup.
 
-_( †† ) `LocalNet` would be the right choice if you prefer to avoid leaking information about your work during the development process since `TestNet` and `BetaNet` are *public* networks. `LocalNet` also gives you total control over accounts, economics and other factors for more advanced use cases (ie. making changes to `nearcore`)._
-
-## `nearup` Installation
-
-You can install `nearup` by following the instructions at https://github.com/near/nearup.
 
 <blockquote class="info">
-<strong>heads up</strong><br><br>
+<strong>请小心</strong><br><br>
 
-The README for `nearup` (linked above) may be **all you need to get a node running**.
-
-This page is made available to clarify a few points of confusion along the way for those who need it.
+`nearup`（上面链接的）的描述README文件可能是你获得一个运行的节点所需要的全部信息。
+可以使用此页面来澄清一些需要它的人的困惑。
 
 </blockquote>
+本文档其余部分中的步骤将需要`nearup`
+## 使用Docker运行官方节点
 
-The steps in the rest of this document will require `nearup`
-
-
-## Running an Official Node using Docker
-
-### Install Docker
-
-By default we use Docker to run the client.
-
-Follow these instructions to install Docker on your machine:
+### 安装Docker
+默认情况下我们使用Docker来运行客户端软件。
+请按照以下说明在您的计算机上安装Docker：
 
 * [MacOS](https://docs.docker.com/docker-for-mac/install/)
 * [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
-NOTE: You can run a node without Docker by adding the `--nodocker` flag to the `nearup` command and specifying the compiled binary path. See how to do this in the next section: [Compiling and Running an Official Node without Docker](/docs/develop/node/running-a-node#compiling-and-running-official-node-testnetbetanet-without-docker).
+注意：您可以通过将`--nodocker`标志添加到`nearup`命令并指定已编译的二进制路径，可以在不使用Docker的情况下运行节点。在下一部分中查看如何执行此操作：在没有Docker的情况下编译和运行官方节点。
 
-### Running `nearup`
-
-
-Once `nearup` and Docker are installed (by following instructions in previous section), just run:
+### 运行 `nearup`
+一旦`nearup`和Docker安装完成（按照上一节中的说明进行操作），请运行：
 
 ```sh
 nearup betanet
 ```
+_（如果您更倾向于使用`TestNet`则只需在上面的命令中替换`betanet`为`testnet` ）_
+然后，系统将提示您输入一个帐户ID。如果您只想运行一个节点，可以将其保留为空。验证者应使用您要抵押的账户的账户ID。如果您想成为验证者，请参见[质押](/docs/validator/staking) 。
 
-_(If you prefer to use `TestNet` then just replace `betanet` with `testnet` in the command above)_
-
-
-You will then be prompted for an Account ID. You can leave this empty if you would just like to run a node. Validators should use the account ID of the account you want to stake with. See [staking](/docs/validator/staking) if you would like to become a validator.
 
 ```text
-Enter your account ID (leave empty if not going to be a validator):
+请输入您的账户ID (如果您不打算成为验证者可以留空):
 ```
-
-A node will then start in the background with Docker.
-
-To check the logs inside Docker, run `docker logs --follow nearcore`.
+然后，一个节点将在Docker中从后台启动。
+要检查Docker内部的日志，请运行`docker logs --follow nearcore`。
 
 ![text-alt](assets/docker-logs.png)
 
@@ -80,91 +67,89 @@ To check the logs inside Docker, run `docker logs --follow nearcore`.
 
 
 
-## Compiling and Running Official Node without Docker
-
-Alternatively, you can build and run a node without Docker by compiling `nearcore` locally and pointing `nearup` to the compiled binaries. Steps in this section provide details of how to do this.
+## 在没有Docker的情况下编译和运行官方节点
+另外，您可以通过`nearcore` 本地编译并将`nearup`指向已编译的二进制文件来构建和运行不带Docker的节点。本节中的步骤提供了有关如何执行此操作的详细信息。
 
 For Mac OS, the `nearup` README [provides a guide](https://github.com/near/nearup#run-nearup-on-macos).
 
-Make sure you have developer tools installed and then use `brew` to install extra tools:
+对于Mac OS，`nearup`描述README文件[提供了指南](https://github.com/near/nearup#run-nearup-on-macos)。
+
+确保已安装开发人员工具，然后用brew安装其他工具：
 
 ```text
 brew install cmake protobuf clang llvm
 ```
 
-For Linux, install these dependencies:
+对于Linux, 请安装以下依赖:
 
 ```text
 apt update
 apt install -y git binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev cmake gcc g++ python docker.io protobuf-compiler libssl-dev pkg-config clang llvm
 ```
 
-Then clone the repo:
+然后克隆这个仓库:
 
 ```text
 git clone https://github.com/near/nearcore.git
 cd nearcore
 ```
-Checkout the version you wish to build:
+切换到您想要构建的版本:
 
 ```bash
 git checkout <version>
 ```
 
-You can then run:
+然后您可以运行:
 
 ```bash
 make release
 ```
+这将为您编译切换(checked out)版本所有二进制文件，包括诸如之类的工具keypair-generator。它们将在target/release/ 生效。
 
-This will compile all the binaries for the version you have checked out, including tools such as the `keypair-generator`; they will be available under `target/release/`.
-
-If you are running a validator in production you may find it more efficient to just build `neard`. In which case, run the following after checking out the version:
-
+如果您在生产环境中运行验证者节点，则可能会发现构建`neard`更有效。在这种情况下，请在切换版本后运行以下命令：
 ```bash
 cargo build -p neard --release
 ```
+注意 请确保您包括`--release` 标志。忽略这一点将导致生成未优化的二进制文件，该二进制文件对于验证程序高效运行角度而言实在太慢了。
 
-NB. Please ensure you include the `--release` flag. Omitting this will lead to an unoptimized binary being produced that is too slow for a validator to function effectively.
-
-Finally:
-On MacOS or Linux
+最后：
+在MacOS或Linux上。
 
 ```bash
 nearup betanet --nodocker --binary-path path/to/nearcore/target/release
 ```
 
-If you want to run `TestNet` instead of `BetaNet` then replace `betanet` with `testnet` in the command above.
+如果要运行`TestNet`而不是运行`BetaNet`，请在上面的命令中将`betanet` 替换为`testnet`。
 
-You will then be prompted for an Account ID. You can leave this empty if you would just like to run a node. Validators should use the account ID of the account you want to stake with. See [staking](/docs/validator/staking) if you would like to become a validator.
+然后，系统将提示您输入一个帐户ID。如果您只想运行一个节点，可以将其保留为空。验证者应使用您要抵押的账户的账户ID。如果您想成为验证者，请参见[质押](/docs/validator/staking) 。
 
 ```text
-Enter your account ID (leave empty if not going to be a validator):
+E请输入您的账户ID (如果您不打算成为验证者可以留空):
 ```
 
-## Running Official Node on GCP
+## 在GCP上运行官方节点
 
-Create new instance, with at least:
 
-* 2 vCPU and 3.75 GB of RAM (We recommend n1-standard-2).
-* Select Ubuntu 18.04 LTS or later.
-* Allocate 100GB of persistent storage.
+创建新实例，至少具有：
 
-Add firewall rules to allow traffic to 24567 port from all IPs (0.0.0.0/0)
 
-SSH into the machine (there is "SSH" button in the console or use gcloud ssh command).
+* 2个vCPU和3.75 GB RAM（我们建议使用n1-standard-2）。
+* 选择Ubuntu 18.04 LTS或更高版本。
+* 分配100GB的持久性存储。
 
-Run:
+
+添加防火墙规则以允许从所有IP（0.0.0.0/0）到24567端口的流量。
+通过SSH进入计算机（控制台中有"SSH"按钮或使用gcloud ssh命令）。
+
+运行:
 
 ```text
 sudo apt update
 sudo apt install -y git binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev cmake gcc g++ python docker.io protobuf-compiler libssl-dev pkg-config clang llvm
 ```
 
-## Success Message
-
-Once you have followed the steps for running a node with Docker or of Compiling without Docker, you should see messages similar to as shown below:
-
+## 运行成功返回的消息
+完成使用Docker运行节点或不使用Docker进行编译的步骤之后，您将看到类似于以下内容的消息：
 
 ```text
 Using local binary at path/to/nearcore/target/release
@@ -174,7 +159,7 @@ Node is running!
 To check logs call: `nearup logs` or `nearup logs --follow`
 ```
 
-or
+或者
 
 ```text
 Using local binary at path/to/nearcore/target/release
@@ -185,6 +170,6 @@ Node is running!
 To check logs call: `nearup logs` or `nearup logs --follow`
 ```
 
->Got a question?
+>有任何的疑问?
 <a href="https://stackoverflow.com/questions/tagged/nearprotocol">
-  <h8>Ask it on StackOverflow!</h8></a>
+  <h8>在StackOverflow上提问!</h8></a>
